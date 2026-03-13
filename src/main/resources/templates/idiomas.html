@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Idiomas</title>
+    <link rel="stylesheet" th:href="@{/css/entities.css}">
+</head>
+<body>
+
+<div class="skills-container">
+    <h1 class="skills-title">Rellene sus idiomas</h1>
+
+    <p class="skills-intro">
+        En este apartado puede añadir los idiomas que domina, su nivel y una URL de icono si lo desea.
+    </p>
+
+    <form th:action="@{/idiomas/save}" th:object="${idiomas}" method="post" class="skills-form">
+        <input type="hidden" name="personalInfoId" th:value="${personalInfoId}">
+
+        <div class="field-group">
+            <label for="idioma">Idioma</label>
+            <input type="text" id="idioma" th:field="*{idioma}" placeholder="Ej. Inglés">
+            <p class="field-error" th:if="${#fields.hasErrors('idioma')}" th:errors="*{idioma}"></p>
+        </div>
+
+        <div class="field-group">
+            <label for="nivel">Nivel</label>
+            <input type="text" id="nivel" th:field="*{nivel}" placeholder="Ej. B2, C1, Nativo">
+            <p class="field-error" th:if="${#fields.hasErrors('nivel')}" th:errors="*{nivel}"></p>
+        </div>
+
+        <div class="field-group">
+            <label for="icono">URL del icono</label>
+            <input type="text" id="icono" th:field="*{icono}" placeholder="https://ejemplo.com/icono.png">
+            <p class="field-error" th:if="${#fields.hasErrors('icono')}" th:errors="*{icono}"></p>
+        </div>
+
+        <div class="actions">
+            <button type="submit" class="btn-primary">Añadir</button>
+
+            <a th:href="@{/portfolio(personalInfoId=${personalInfoId})}" class="btn-secondary">
+                Siguiente →
+            </a>
+        </div>
+    </form>
+
+    <div class="saved-skills-box" th:if="${idiomasList != null and !#lists.isEmpty(idiomasList)}">
+        <h2>Idiomas añadidos</h2>
+
+        <div class="skills-cards">
+            <div class="skill-card" th:each="i : ${idiomasList}">
+                <div class="skill-card-header">
+                    <h3 th:text="${i.idioma}">Idioma</h3>
+                    <span th:text="${i.nivel}">B2</span>
+                </div>
+
+                <p>
+                    <strong>Icono:</strong>
+                    <span th:text="${i.icono != null and !#strings.isEmpty(i.icono) ? i.icono : 'Sin icono'}">Sin icono</span>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

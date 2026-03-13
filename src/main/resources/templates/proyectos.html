@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proyectos</title>
+    <link rel="stylesheet" th:href="@{/css/entities.css}">
+</head>
+<body>
+
+<div class="skills-container">
+    <h1 class="skills-title">Rellene sus proyectos</h1>
+
+    <p class="skills-intro">
+        En este apartado puede añadir sus proyectos. Introduzca el título,
+        descripción y, si quiere, una imagen y la URL del proyecto.
+    </p>
+
+    <form th:action="@{/projects/save}" th:object="${project}" method="post" class="skills-form">
+        <input type="hidden" name="personalInfoId" th:value="${personalInfoId}">
+
+        <div class="field-group">
+            <label for="titulo">Título del proyecto</label>
+            <input type="text" id="titulo" th:field="*{titulo}" placeholder="Ej. App de gestión de tareas">
+            <p class="field-error" th:if="${#fields.hasErrors('titulo')}" th:errors="*{titulo}"></p>
+        </div>
+
+        <div class="field-group">
+            <label for="descripcion">Descripción</label>
+            <textarea id="descripcion" th:field="*{descripcion}" placeholder="Describe el proyecto"></textarea>
+            <p class="field-error" th:if="${#fields.hasErrors('descripcion')}" th:errors="*{descripcion}"></p>
+        </div>
+
+        <div class="field-group">
+            <label for="imagenUrl">URL de la imagen</label>
+            <input type="text" id="imagenUrl" th:field="*{imagenUrl}" placeholder="https://ejemplo.com/imagen.png">
+            <p class="field-error" th:if="${#fields.hasErrors('imagenUrl')}" th:errors="*{imagenUrl}"></p>
+        </div>
+
+        <div class="field-group">
+            <label for="proyectoUrl">URL del proyecto</label>
+            <input type="text" id="proyectoUrl" th:field="*{proyectoUrl}" placeholder="https://github.com/usuario/proyecto">
+            <p class="field-error" th:if="${#fields.hasErrors('proyectoUrl')}" th:errors="*{proyectoUrl}"></p>
+        </div>
+
+        <p class="error-message next-error" th:if="${nextError}" th:text="${nextError}"></p>
+
+        <div class="actions">
+            <button type="submit" class="btn-primary">Añadir</button>
+
+            <a th:href="@{/projects/next/{personalInfoId}(personalInfoId=${personalInfoId})}" class="btn-next">
+                Siguiente →
+            </a>
+        </div>
+    </form>
+
+    <div class="saved-skills-box" th:if="${projectsList != null and !#lists.isEmpty(projectsList)}">
+        <h2>Proyectos añadidos</h2>
+
+        <div class="skills-cards">
+            <div class="skill-card" th:each="p : ${projectsList}">
+                <div class="skill-card-header">
+                    <h3 th:text="${p.titulo}">Proyecto</h3>
+                    <span th:text="${p.proyectoUrl != null and !#strings.isEmpty(p.proyectoUrl) ? 'Con enlace' : 'Sin enlace'}">Estado</span>
+                </div>
+
+                <p th:text="${p.descripcion}">Descripción</p>
+                <p>
+                    <strong>Imagen:</strong>
+                    <span th:text="${p.imagenUrl != null and !#strings.isEmpty(p.imagenUrl) ? p.imagenUrl : 'Sin imagen'}">Sin imagen</span>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

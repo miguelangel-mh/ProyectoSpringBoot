@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio</title>
+    <link rel="stylesheet" th:href="@{/css/portfolio.css}">
+</head>
+<body>
+
+<div class="portfolio-container">
+
+    <section class="hero-card">
+        <div class="hero-left">
+            <img th:src="@{/img/perfil-default.webp}" alt="Foto de perfil" class="profile-img">
+        </div>
+
+        <div class="hero-right">
+            <h1>
+                <span th:text="${personalInfo.nombre}">Nombre</span>
+                <span th:text="${personalInfo.apellidos}">Apellidos</span>
+            </h1>
+
+            <h2 th:if="${personalInfo.titulo != null and !#strings.isEmpty(personalInfo.titulo)}"
+                th:text="${personalInfo.titulo}">
+                Título profesional
+            </h2>
+
+            <p class="hero-description"
+               th:if="${personalInfo.descripcion != null and !#strings.isEmpty(personalInfo.descripcion)}"
+               th:text="${personalInfo.descripcion}">
+                Descripción personal
+            </p>
+
+            <div class="contact-info">
+                <p th:if="${personalInfo.email != null and !#strings.isEmpty(personalInfo.email)}">
+                    <strong>Email:</strong>
+                    <span th:text="${personalInfo.email}"></span>
+                </p>
+
+                <p th:if="${personalInfo.telefono != null and !#strings.isEmpty(personalInfo.telefono)}">
+                    <strong>Teléfono:</strong>
+                    <span th:text="${personalInfo.telefono}"></span>
+                </p>
+
+                <p th:if="${personalInfo.linkedinUrl != null and !#strings.isEmpty(personalInfo.linkedinUrl)}">
+                    <strong>LinkedIn:</strong>
+                    <a th:href="${personalInfo.linkedinUrl}" th:text="${personalInfo.linkedinUrl}" target="_blank"></a>
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section class="portfolio-section" th:if="${skillsList != null and !#lists.isEmpty(skillsList)}">
+        <h3>Skills</h3>
+
+        <div class="cards-grid">
+            <div class="info-card" th:each="skill : ${skillsList}">
+                <div class="card-icon-wrapper">
+                    <img th:src="@{/img/skill-default.png}" alt="Skill" class="skill-img">
+                </div>
+
+                <h4 th:text="${skill.name}">Skill</h4>
+
+                <p th:if="${skill.level != null}">
+                    <strong>Nivel:</strong>
+                    <span th:text="${skill.level + '%'}">80%</span>
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section class="portfolio-section" th:if="${educationList != null and !#lists.isEmpty(educationList)}">
+        <h3>Formación</h3>
+
+        <div class="timeline-list">
+            <div class="timeline-card" th:each="education : ${educationList}">
+                <h4 th:text="${education.titulo}">Título</h4>
+
+                <p class="subtitle"
+                   th:if="${education.centro != null and !#strings.isEmpty(education.centro)}"
+                   th:text="${education.centro}">
+                    Centro
+                </p>
+
+                <p class="dates" th:if="${education.inicio != null or education.fin != null}">
+                    <span th:if="${education.inicio != null}" th:text="${education.inicio}">2020-09-01</span>
+                    <span th:if="${education.inicio != null or education.fin != null}"> - </span>
+                    <span th:text="${education.fin != null ? education.fin : 'Actualidad'}">Actualidad</span>
+                </p>
+
+                <p th:if="${education.descripcion != null and !#strings.isEmpty(education.descripcion)}"
+                   th:text="${education.descripcion}">
+                    Descripción
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section class="portfolio-section" th:if="${experienceList != null and !#lists.isEmpty(experienceList)}">
+        <h3>Experiencia</h3>
+
+        <div class="timeline-list">
+            <div class="timeline-card" th:each="experience : ${experienceList}">
+                <h4 th:text="${experience.titulo}">Puesto</h4>
+
+                <p class="subtitle"
+                   th:if="${experience.empresa != null and !#strings.isEmpty(experience.empresa)}"
+                   th:text="${experience.empresa}">
+                    Empresa
+                </p>
+
+                <p class="dates" th:if="${experience.inicio != null or experience.fin != null}">
+                    <span th:if="${experience.inicio != null}" th:text="${experience.inicio}">2021-01-01</span>
+                    <span th:if="${experience.inicio != null or experience.fin != null}"> - </span>
+                    <span th:text="${experience.fin != null ? experience.fin : 'Actualidad'}">Actualidad</span>
+                </p>
+
+                <p th:if="${experience.descripcion != null and !#strings.isEmpty(experience.descripcion)}"
+                   th:text="${experience.descripcion}">
+                    Descripción
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section class="portfolio-section" th:if="${projectsList != null and !#lists.isEmpty(projectsList)}">
+        <h3>Proyectos</h3>
+
+        <div class="cards-grid">
+            <div class="project-card" th:each="project : ${projectsList}">
+                <img th:src="@{/img/proyecto-default.jpg}" alt="Proyecto" class="project-img">
+                <br>
+
+                <div class="project-content">
+                    <h4 th:text="${project.titulo}">Proyecto</h4>
+
+                    <p th:if="${project.descripcion != null and !#strings.isEmpty(project.descripcion)}"
+                       th:text="${project.descripcion}">
+                        Descripción
+                    </p>
+
+                    <a th:if="${project.proyectoUrl != null and !#strings.isEmpty(project.proyectoUrl)}"
+                       th:href="${project.proyectoUrl}"
+                       target="_blank"
+                       class="project-link">
+                        Ver proyecto
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="portfolio-section" th:if="${idiomasList != null and !#lists.isEmpty(idiomasList)}">
+        <h3>Idiomas</h3>
+
+        <div class="cards-grid">
+            <div class="info-card" th:each="idioma : ${idiomasList}">
+                <div class="card-icon-wrapper">
+                    <img th:src="@{/img/idioma-default.webp}" alt="Idioma" class="language-img">
+                </div>
+
+                <h4 th:text="${idioma.idioma}">Idioma</h4>
+
+                <p th:if="${idioma.nivel != null and !#strings.isEmpty(idioma.nivel)}">
+                    <strong>Nivel:</strong>
+                    <span th:text="${idioma.nivel}">B2</span>
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <div class="portfolio-actions">
+        <button onclick="window.print()">Descargar / Imprimir</button>
+    </div>
+
+</div>
+
+</body>
+</html>

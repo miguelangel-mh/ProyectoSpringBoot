@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Experiencia</title>
+    <link rel="stylesheet" th:href="@{/css/entities.css}">
+</head>
+<body>
+
+<div class="skills-container">
+    <h1 class="skills-title">Rellene su experiencia</h1>
+
+    <p class="skills-intro">
+        En este apartado puede añadir su experiencia profesional. Introduzca el puesto,
+        empresa, fechas y una breve descripción. Puede guardar tantas entradas como quiera.
+    </p>
+
+    <form th:action="@{/experience/save}" th:object="${experience}" method="post" class="skills-form">
+        <input type="hidden" name="personalInfoId" th:value="${personalInfoId}">
+
+        <div class="field-group">
+            <label for="titulo">Título del puesto</label>
+            <input type="text" id="titulo" th:field="*{titulo}" placeholder="Ej. Desarrollador Web">
+            <p class="field-error" th:if="${#fields.hasErrors('titulo')}" th:errors="*{titulo}"></p>
+        </div>
+
+        <div class="field-group">
+            <label for="empresa">Empresa / Autónomo</label>
+            <input type="text" id="empresa" th:field="*{empresa}" placeholder="Ej. NTT Data o Autónomo">
+            <p class="field-error" th:if="${#fields.hasErrors('empresa')}" th:errors="*{empresa}"></p>
+        </div>
+
+        <div class="field-group">
+            <label for="inicio">Fecha de inicio</label>
+            <input type="date" id="inicio" th:field="*{inicio}">
+            <p class="field-error" th:if="${#fields.hasErrors('inicio')}" th:errors="*{inicio}"></p>
+        </div>
+
+        <div class="field-group">
+            <label for="fin">Fecha de finalización</label>
+            <input type="date" id="fin" th:field="*{fin}">
+            <p class="field-error" th:if="${#fields.hasErrors('fin')}" th:errors="*{fin}"></p>
+        </div>
+
+        <div class="field-group">
+            <label for="descripcion">Descripción</label>
+            <textarea id="descripcion" th:field="*{descripcion}" placeholder="Describe tus funciones o logros"></textarea>
+            <p class="field-error" th:if="${#fields.hasErrors('descripcion')}" th:errors="*{descripcion}"></p>
+        </div>
+
+        <div class="actions">
+            <button type="submit" class="btn-primary">Añadir</button>
+
+            <a th:href="@{/projects(personalInfoId=${personalInfoId})}" class="btn-secondary">
+                Siguiente →
+            </a>
+        </div>
+    </form>
+
+    <div class="saved-skills-box" th:if="${experienceList != null and !#lists.isEmpty(experienceList)}">
+        <h2>Experiencia añadida</h2>
+
+        <div class="skills-cards">
+            <div class="skill-card" th:each="e : ${experienceList}">
+                <div class="skill-card-header">
+                    <h3 th:text="${e.titulo}">Puesto</h3>
+                    <span th:text="${e.inicio + ' - ' + (e.fin != null ? e.fin : 'Actualidad')}">Fechas</span>
+                </div>
+
+                <p><strong>Empresa:</strong> <span th:text="${e.empresa}">Empresa</span></p>
+                <p th:text="${e.descripcion}">Descripción</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
