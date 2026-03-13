@@ -15,17 +15,24 @@
         En este apartado puede añadir los idiomas que domina, su nivel y una URL de icono si lo desea.
     </p>
 
+    <div class="progress-wrapper">
+        <div class="progress-text">Paso 6 de 6 · Idiomas</div>
+        <div class="progress-bar">
+            <div class="progress-fill step-6"></div>
+        </div>
+    </div>
+
     <form th:action="@{/idiomas/save}" th:object="${idiomas}" method="post" class="skills-form">
-        <input type="hidden" name="personalInfoId" th:value="${personalInfoId}">
+        <input type="hidden" name="token" th:value="${token}">
 
         <div class="field-group">
-            <label for="idioma">Idioma</label>
+            <label for="idioma" class="required-field">Idioma</label>
             <input type="text" id="idioma" th:field="*{idioma}" placeholder="Ej. Inglés">
             <p class="field-error" th:if="${#fields.hasErrors('idioma')}" th:errors="*{idioma}"></p>
         </div>
 
         <div class="field-group">
-            <label for="nivel">Nivel</label>
+            <label for="nivel" class="required-field">Nivel</label>
             <input type="text" id="nivel" th:field="*{nivel}" placeholder="Ej. B2, C1, Nativo">
             <p class="field-error" th:if="${#fields.hasErrors('nivel')}" th:errors="*{nivel}"></p>
         </div>
@@ -39,7 +46,7 @@
         <div class="actions">
             <button type="submit" class="btn-primary">Añadir</button>
 
-            <a th:href="@{/portfolio(personalInfoId=${personalInfoId})}" class="btn-secondary">
+            <a th:href="@{/portfolio(token=${token})}" class="btn-secondary">
                 Siguiente →
             </a>
         </div>

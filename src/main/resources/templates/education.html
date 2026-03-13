@@ -16,23 +16,30 @@
         el centro, las fechas y una breve descripción. Puede guardar tantas entradas como quiera.
     </p>
 
+    <div class="progress-wrapper">
+        <div class="progress-text">Paso 3 de 6 · Formación</div>
+        <div class="progress-bar">
+            <div class="progress-fill step-3"></div>
+        </div>
+    </div>
+
     <form th:action="@{/education/save}" th:object="${education}" method="post" class="skills-form">
-        <input type="hidden" name="personalInfoId" th:value="${personalInfoId}">
+        <input type="hidden" name="token" th:value="${token}">
 
         <div class="field-group">
-            <label for="titulo">Título</label>
+            <label for="titulo" class="required-field">Título</label>
             <input type="text" id="titulo" th:field="*{titulo}" placeholder="Ej. Grado en Ingeniería Informática">
             <p class="field-error" th:if="${#fields.hasErrors('titulo')}" th:errors="*{titulo}"></p>
         </div>
 
         <div class="field-group">
-            <label for="centro">Centro</label>
+            <label for="centro" class="required-field">Centro</label>
             <input type="text" id="centro" th:field="*{centro}" placeholder="Ej. Universidad de Granada">
             <p class="field-error" th:if="${#fields.hasErrors('centro')}" th:errors="*{centro}"></p>
         </div>
 
         <div class="field-group">
-            <label for="inicio">Fecha de inicio</label>
+            <label for="inicio" class="required-field">Fecha de inicio</label>
             <input type="date" id="inicio" th:field="*{inicio}">
             <p class="field-error" th:if="${#fields.hasErrors('inicio')}" th:errors="*{inicio}"></p>
         </div>
@@ -44,7 +51,7 @@
         </div>
 
         <div class="field-group">
-            <label for="descripcion">Descripción</label>
+            <label for="descripcion" class="required-field">Descripción</label>
             <textarea id="descripcion" th:field="*{descripcion}" placeholder="Describe brevemente esta formación"></textarea>
             <p class="field-error" th:if="${#fields.hasErrors('descripcion')}" th:errors="*{descripcion}"></p>
         </div>
@@ -54,7 +61,7 @@
         <div class="actions">
             <button type="submit" class="btn-primary">Añadir</button>
 
-            <a th:href="@{/education/next/{personalInfoId}(personalInfoId=${personalInfoId})}" class="btn-secondary">
+            <a th:href="@{/education/next(token=${token})}" class="btn-secondary">
                 Siguiente →
             </a>
         </div>
@@ -78,5 +85,4 @@
 </div>
 
 </body>
-
 </html>

@@ -192,6 +192,45 @@ body {
     color: #d93025;
 }
 
+.required-field::after {
+    content: " *";
+    color: #807373;
+    font-weight: 700;
+}
+
+.progress-wrapper {
+    margin-bottom: 24px;
+}
+
+.progress-text {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #444;
+    margin-bottom: 8px;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 12px;
+    background: #e9ecef;
+    border-radius: 999px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #6c63ff, #4cc9f0);
+    transition: width 0.3s ease;
+}
+
+.step-1 { width: 16.66%; }
+.step-2 { width: 33.33%; }
+.step-3 { width: 50%; }
+.step-4 { width: 66.66%; }
+.step-5 { width: 83.33%; }
+.step-6 { width: 100%; }
+
 @media (max-width: 768px) {
     .hero h1 {
         font-size: 1.95rem;

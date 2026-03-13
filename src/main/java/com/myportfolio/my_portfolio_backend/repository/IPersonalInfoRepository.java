@@ -7,6 +7,6 @@ import java.util.Optional;
 
 public interface IPersonalInfoRepository extends CrudRepository<PersonalInfo, Long> {
 
-
+    Optional<PersonalInfo> findByEditToken(String editToken);
 
 }

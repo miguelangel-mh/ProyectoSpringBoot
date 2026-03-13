@@ -1,5 +1,5 @@
-INSERT INTO personal_info (nombre, apellidos, titulo, descripcion, imagen, email, telefono, linkedin_url, created_at) VALUES
-('Miguel Ángel', 'Martínez Herrera', 'Full Stack Developer', 'Aprendiendo y mejorando cada dia, un buen entorno de trabajo crea grandes resultados', '/img/perfil.png', 'herrera.martinez.miguelangel1@gmail.com', '+34 662 404 867', 'https://www.linkedin.com/in/miguel-angel-martinez-herrera-15795927b/', CURRENT_TIMESTAMP) ;
+INSERT INTO personal_info (nombre, apellidos, titulo, descripcion, imagen, email, telefono, linkedin_url, created_at, edit_token) VALUES
+('Miguel Ángel', 'Martínez Herrera', 'Full Stack Developer', 'Aprendiendo y mejorando cada dia, un buen entorno de trabajo crea grandes resultados', '/img/perfil.png', 'herrera.martinez.miguelangel1@gmail.com', '+34 662 404 867', 'https://www.linkedin.com/in/miguel-angel-martinez-herrera-15795927b/', CURRENT_TIMESTAMP, 'miguel-demo-token-123') ;
 
 INSERT INTO skills (name, level, icono, personal_info_id) VALUES
 ('JAVA', 80, 'fab fa-java', 1),

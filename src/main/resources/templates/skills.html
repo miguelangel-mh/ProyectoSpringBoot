@@ -17,8 +17,15 @@
         Después indique su nivel y una URL de icono. Puede guardar tantas skills como quiera.
     </p>
 
+    <div class="progress-wrapper">
+        <div class="progress-text">Paso 2 de 6 · Skills</div>
+        <div class="progress-bar">
+            <div class="progress-fill step-2"></div>
+        </div>
+    </div>
+
     <form th:action="@{/skill/save}" th:object="${skill}" method="post" class="skills-form" novalidate>
-        <input type="hidden" name="personalInfoId" th:value="${personalInfoId}">
+        <input type="hidden" name="token" th:value="${token}">
 
         <div class="field-group">
             <label for="skillSearch">Buscar skill</label>
@@ -34,7 +41,7 @@
         </div>
 
         <div class="field-group">
-            <label for="name">Nombre de la skill</label>
+            <label for="name" class="required-field">Nombre de la skill</label>
             <input
                     type="text"
                     id="name"
@@ -45,7 +52,7 @@
         </div>
 
         <div class="field-group">
-            <label for="level">Nivel</label>
+            <label for="level" class="required-field">Nivel</label>
             <input
                     type="number"
                     id="level"
@@ -72,7 +79,7 @@
         <div class="actions">
             <button type="submit" class="btn-primary">Guardar skill</button>
 
-            <a th:href="@{/skills/next/{personalInfoId}(personalInfoId=${personalInfoId})}" class="btn-secondary">
+            <a th:href="@{/skills/next(token=${token})}" class="btn-secondary">
                 Siguiente →
             </a>
         </div>

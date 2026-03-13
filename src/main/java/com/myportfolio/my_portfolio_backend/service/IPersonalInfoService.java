@@ -12,5 +12,6 @@ public interface IPersonalInfoService {
     List<PersonalInfo> findAll() ;
     void deleteById(Long id) ;
     Optional<PersonalInfo> update(Long id, PersonalInfo personalInfo) ;
+    Optional<PersonalInfo> findByEditToken(String editToken);
 
 }

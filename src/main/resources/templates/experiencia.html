@@ -16,23 +16,30 @@
         empresa, fechas y una breve descripción. Puede guardar tantas entradas como quiera.
     </p>
 
+    <div class="progress-wrapper">
+        <div class="progress-text">Paso 4 de 6 · Experiencia</div>
+        <div class="progress-bar">
+            <div class="progress-fill step-4"></div>
+        </div>
+    </div>
+
     <form th:action="@{/experience/save}" th:object="${experience}" method="post" class="skills-form">
-        <input type="hidden" name="personalInfoId" th:value="${personalInfoId}">
+        <input type="hidden" name="token" th:value="${token}">
 
         <div class="field-group">
-            <label for="titulo">Título del puesto</label>
+            <label for="titulo" class="required-field">Título del puesto</label>
             <input type="text" id="titulo" th:field="*{titulo}" placeholder="Ej. Desarrollador Web">
             <p class="field-error" th:if="${#fields.hasErrors('titulo')}" th:errors="*{titulo}"></p>
         </div>
 
         <div class="field-group">
-            <label for="empresa">Empresa / Autónomo</label>
+            <label for="empresa" class="required-field">Empresa / Autónomo</label>
             <input type="text" id="empresa" th:field="*{empresa}" placeholder="Ej. NTT Data o Autónomo">
             <p class="field-error" th:if="${#fields.hasErrors('empresa')}" th:errors="*{empresa}"></p>
         </div>
 
         <div class="field-group">
-            <label for="inicio">Fecha de inicio</label>
+            <label for="inicio" class="required-field">Fecha de inicio</label>
             <input type="date" id="inicio" th:field="*{inicio}">
             <p class="field-error" th:if="${#fields.hasErrors('inicio')}" th:errors="*{inicio}"></p>
         </div>
@@ -44,7 +51,7 @@
         </div>
 
         <div class="field-group">
-            <label for="descripcion">Descripción</label>
+            <label for="descripcion" class="required-field">Descripción</label>
             <textarea id="descripcion" th:field="*{descripcion}" placeholder="Describe tus funciones o logros"></textarea>
             <p class="field-error" th:if="${#fields.hasErrors('descripcion')}" th:errors="*{descripcion}"></p>
         </div>
@@ -52,7 +59,7 @@
         <div class="actions">
             <button type="submit" class="btn-primary">Añadir</button>
 
-            <a th:href="@{/projects(personalInfoId=${personalInfoId})}" class="btn-secondary">
+            <a th:href="@{/projects(token=${token})}" class="btn-secondary">
                 Siguiente →
             </a>
         </div>

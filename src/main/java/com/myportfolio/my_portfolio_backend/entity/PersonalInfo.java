@@ -3,12 +3,14 @@ package com.myportfolio.my_portfolio_backend.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.URL;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Data
 @AllArgsConstructor
@@ -32,9 +34,16 @@ public class PersonalInfo {
     @Email(message = "El email no es válido")
     private String email ;
     @NotBlank(message = "El teléfono es obligatorio")
-    private String telefono ;
+    @Pattern(
+            regexp = "^(\\+34\\s?)?[6789]\\d{8}$",
+            message = "Formato no válido"
+    )
+    private String telefono;
     @URL(message = "URL no válida")
     private String linkedinUrl ;
+
+    @Column(name = "edit_token", unique = true, nullable = false, updatable = false)
+    private String editToken;
 
     @Embedded
     private Audit audit = new Audit() ;
@@ -45,6 +54,10 @@ public class PersonalInfo {
             audit = new Audit();
         }
         audit.setCreatedAt(LocalDateTime.now());
+
+        if (editToken == null || editToken.isBlank()) {
+            editToken = UUID.randomUUID().toString();
+        }
     }
 
     @PreUpdate

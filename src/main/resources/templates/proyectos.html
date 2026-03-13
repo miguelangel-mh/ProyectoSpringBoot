@@ -16,17 +16,24 @@
         descripción y, si quiere, una imagen y la URL del proyecto.
     </p>
 
+    <div class="progress-wrapper">
+        <div class="progress-text">Paso 5 de 6 · Proyectos</div>
+        <div class="progress-bar">
+            <div class="progress-fill step-5"></div>
+        </div>
+    </div>
+
     <form th:action="@{/projects/save}" th:object="${project}" method="post" class="skills-form">
-        <input type="hidden" name="personalInfoId" th:value="${personalInfoId}">
+        <input type="hidden" name="token" th:value="${token}">
 
         <div class="field-group">
-            <label for="titulo">Título del proyecto</label>
+            <label for="titulo" class="required-field">Título del proyecto</label>
             <input type="text" id="titulo" th:field="*{titulo}" placeholder="Ej. App de gestión de tareas">
             <p class="field-error" th:if="${#fields.hasErrors('titulo')}" th:errors="*{titulo}"></p>
         </div>
 
         <div class="field-group">
-            <label for="descripcion">Descripción</label>
+            <label for="descripcion" class="required-field">Descripción</label>
             <textarea id="descripcion" th:field="*{descripcion}" placeholder="Describe el proyecto"></textarea>
             <p class="field-error" th:if="${#fields.hasErrors('descripcion')}" th:errors="*{descripcion}"></p>
         </div>
@@ -48,7 +55,7 @@
         <div class="actions">
             <button type="submit" class="btn-primary">Añadir</button>
 
-            <a th:href="@{/projects/next/{personalInfoId}(personalInfoId=${personalInfoId})}" class="btn-secondary">
+            <a th:href="@{/projects/next(token=${token})}" class="btn-secondary">
                 Siguiente →
             </a>
         </div>
@@ -75,5 +82,4 @@
 </div>
 
 </body>
-
 </html>

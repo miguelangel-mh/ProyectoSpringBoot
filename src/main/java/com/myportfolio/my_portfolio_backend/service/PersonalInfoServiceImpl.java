@@ -48,6 +48,12 @@ public class PersonalInfoServiceImpl implements IPersonalInfoService{
 
     @Override
     @Transactional(readOnly = true)
+    public Optional<PersonalInfo> findByEditToken(String editToken) {
+        return personalInfoRepository.findByEditToken(editToken);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public Optional<PersonalInfo> findById(Long id) {
         return personalInfoRepository.findById(id);
     }

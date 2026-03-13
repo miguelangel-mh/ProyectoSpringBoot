@@ -27,6 +27,11 @@ public class PortfolioController {
     private final IProjectsService projectsService ;
     private final IIdiomasService idiomasService ;
 
+    @GetMapping("/")
+    public String home() {
+        return "redirect:/form";
+    }
+
     @GetMapping("/form")
     public String showForm(Model model){
         model.addAttribute("personalInfo", new PersonalInfo()) ;
@@ -47,7 +52,7 @@ public class PortfolioController {
         }
 
         PersonalInfo saved = personalInfoService.save(personalInfo);
-        return "redirect:/skills-form?personalInfoId=" + saved.getId();
+        return "redirect:/skills-form?token=" + saved.getEditToken();
     }
 
     @GetMapping("/search")
@@ -58,9 +63,17 @@ public class PortfolioController {
     }
 
     @GetMapping("/skills-form")
-    public String showSkillsForm(@RequestParam("personalInfoId") Long personalInfoId, Model model) {
+    public String showSkillsForm(@RequestParam("token") String token, Model model) {
+        Optional<PersonalInfo> personalInfoOpt = personalInfoService.findByEditToken(token);
+
+        if (personalInfoOpt.isEmpty()) {
+            return "redirect:/form";
+        }
+
+        Long personalInfoId = personalInfoOpt.get().getId();
+
         model.addAttribute("skill", new Skills());
-        model.addAttribute("personalInfoId", personalInfoId);
+        model.addAttribute("token", token);
         model.addAttribute("skillsList", skillsService.findByPersonalInfoId(personalInfoId));
         return "skills";
     }
@@ -68,46 +81,65 @@ public class PortfolioController {
     @PostMapping("/skill/save")
     public String saveSkill(@Valid @ModelAttribute("skill") Skills skill,
                             BindingResult result,
-                            @RequestParam("personalInfoId") Long personalInfoId,
+                            @RequestParam("token") String token,
                             Model model) {
 
-        Optional<PersonalInfo> personalInfoOpt = personalInfoService.findById(personalInfoId);
+        Optional<PersonalInfo> personalInfoOpt = personalInfoService.findByEditToken(token);
 
         if (personalInfoOpt.isEmpty()) {
             return "redirect:/form";
         }
 
+        PersonalInfo personalInfo = personalInfoOpt.get();
+        Long personalInfoId = personalInfo.getId();
+
         if (result.hasErrors()) {
-            model.addAttribute("personalInfoId", personalInfoId);
+            model.addAttribute("token", token);
             model.addAttribute("skillsList", skillsService.findByPersonalInfoId(personalInfoId));
             return "skills";
         }
 
-        skill.setPersonalInfo(personalInfoOpt.get());
+        skill.setPersonalInfo(personalInfo);
         skillsService.save(skill);
 
-        return "redirect:/skills-form?personalInfoId=" + personalInfoId;
+        return "redirect:/skills-form?token=" + token;
     }
 
-    @GetMapping("/skills/next/{personalInfoId}")
-    public String goToEducation(@PathVariable Long personalInfoId,
+    @GetMapping("/skills/next")
+    public String goToEducation(@RequestParam("token") String token,
                                 RedirectAttributes redirectAttributes) {
+
+        Optional<PersonalInfo> personalInfoOpt = personalInfoService.findByEditToken(token);
+
+        if (personalInfoOpt.isEmpty()) {
+            return "redirect:/form";
+        }
+
+        Long personalInfoId = personalInfoOpt.get().getId();
 
         boolean hasSkills = skillsService.existsByPersonalInfoId(personalInfoId);
 
         if (!hasSkills) {
             redirectAttributes.addFlashAttribute("nextError",
                     "Debes añadir al menos una skill antes de continuar.");
-            return "redirect:/skills-form?personalInfoId=" + personalInfoId;
+            return "redirect:/skills-form?token=" + token;
         }
 
-        return "redirect:/education?personalInfoId=" + personalInfoId;
+        return "redirect:/education?token=" + token;
     }
 
     @GetMapping("/education")
-    public String showEducationForm(@RequestParam("personalInfoId") Long personalInfoId, Model model) {
+    public String showEducationForm(@RequestParam("token") String token, Model model) {
+        Optional<PersonalInfo> personalInfoOpt = personalInfoService.findByEditToken(token);
+
+        if (personalInfoOpt.isEmpty()) {
+            return "redirect:/form";
+        }
+
+        Long personalInfoId = personalInfoOpt.get().getId();
+
         model.addAttribute("education", new Education());
-        model.addAttribute("personalInfoId", personalInfoId);
+        model.addAttribute("token", token);
         model.addAttribute("educationList", educationService.findByPersonalInfoId(personalInfoId));
         return "education";
     }
@@ -115,46 +147,65 @@ public class PortfolioController {
     @PostMapping("/education/save")
     public String saveEducation(@Valid @ModelAttribute("education") Education education,
                                 BindingResult result,
-                                @RequestParam("personalInfoId") Long personalInfoId,
+                                @RequestParam("token") String token,
                                 Model model) {
 
-        Optional<PersonalInfo> personalInfoOpt = personalInfoService.findById(personalInfoId);
+        Optional<PersonalInfo> personalInfoOpt = personalInfoService.findByEditToken(token);
 
         if (personalInfoOpt.isEmpty()) {
             return "redirect:/form";
         }
 
+        PersonalInfo personalInfo = personalInfoOpt.get();
+        Long personalInfoId = personalInfo.getId();
+
         if (result.hasErrors()) {
-            model.addAttribute("personalInfoId", personalInfoId);
+            model.addAttribute("token", token);
             model.addAttribute("educationList", educationService.findByPersonalInfoId(personalInfoId));
             return "education";
         }
 
-        education.setPersonalInfo(personalInfoOpt.get());
+        education.setPersonalInfo(personalInfo);
         educationService.save(education);
 
-        return "redirect:/education?personalInfoId=" + personalInfoId;
+        return "redirect:/education?token=" + token;
     }
 
-    @GetMapping("/education/next/{personalInfoId}")
-    public String goToProjects(@PathVariable Long personalInfoId,
+    @GetMapping("/education/next")
+    public String goToProjects(@RequestParam("token") String token,
                                RedirectAttributes redirectAttributes) {
+
+        Optional<PersonalInfo> personalInfoOpt = personalInfoService.findByEditToken(token);
+
+        if (personalInfoOpt.isEmpty()) {
+            return "redirect:/form";
+        }
+
+        Long personalInfoId = personalInfoOpt.get().getId();
 
         boolean hasEducation = educationService.existsByPersonalInfoId(personalInfoId);
 
         if (!hasEducation) {
             redirectAttributes.addFlashAttribute("nextError",
                     "Debes añadir al menos una formación antes de continuar.");
-            return "redirect:/education?personalInfoId=" + personalInfoId;
+            return "redirect:/education?token=" + token;
         }
 
-        return "redirect:/experience?personalInfoId=" + personalInfoId;
+        return "redirect:/experience?token=" + token;
     }
 
     @GetMapping("/experience")
-    public String showExperienceForm(@RequestParam("personalInfoId") Long personalInfoId, Model model) {
+    public String showExperienceForm(@RequestParam("token") String token, Model model) {
+        Optional<PersonalInfo> personalInfoOpt = personalInfoService.findByEditToken(token);
+
+        if (personalInfoOpt.isEmpty()) {
+            return "redirect:/form";
+        }
+
+        Long personalInfoId = personalInfoOpt.get().getId();
+
         model.addAttribute("experience", new Experience());
-        model.addAttribute("personalInfoId", personalInfoId);
+        model.addAttribute("token", token);
         model.addAttribute("experienceList", experienceService.findByPersonalInfoId(personalInfoId));
         return "experiencia";
     }
@@ -162,31 +213,42 @@ public class PortfolioController {
     @PostMapping("/experience/save")
     public String saveExperience(@Valid @ModelAttribute("experience") Experience experience,
                                  BindingResult result,
-                                 @RequestParam("personalInfoId") Long personalInfoId,
+                                 @RequestParam("token") String token,
                                  Model model) {
 
-        Optional<PersonalInfo> personalInfoOpt = personalInfoService.findById(personalInfoId);
+        Optional<PersonalInfo> personalInfoOpt = personalInfoService.findByEditToken(token);
 
         if (personalInfoOpt.isEmpty()) {
             return "redirect:/form";
         }
 
+        PersonalInfo personalInfo = personalInfoOpt.get();
+        Long personalInfoId = personalInfo.getId();
+
         if (result.hasErrors()) {
-            model.addAttribute("personalInfoId", personalInfoId);
+            model.addAttribute("token", token);
             model.addAttribute("experienceList", experienceService.findByPersonalInfoId(personalInfoId));
             return "experiencia";
         }
 
-        experience.setPersonalInfo(personalInfoOpt.get());
+        experience.setPersonalInfo(personalInfo);
         experienceService.save(experience);
 
-        return "redirect:/experience?personalInfoId=" + personalInfoId;
+        return "redirect:/experience?token=" + token;
     }
 
     @GetMapping("/projects")
-    public String showProjectsForm(@RequestParam("personalInfoId") Long personalInfoId, Model model) {
+    public String showProjectsForm(@RequestParam("token") String token, Model model) {
+        Optional<PersonalInfo> personalInfoOpt = personalInfoService.findByEditToken(token);
+
+        if (personalInfoOpt.isEmpty()) {
+            return "redirect:/form";
+        }
+
+        Long personalInfoId = personalInfoOpt.get().getId();
+
         model.addAttribute("project", new Projects());
-        model.addAttribute("personalInfoId", personalInfoId);
+        model.addAttribute("token", token);
         model.addAttribute("projectsList", projectsService.findByPersonalInfoId(personalInfoId));
         return "proyectos";
     }
@@ -194,46 +256,65 @@ public class PortfolioController {
     @PostMapping("/projects/save")
     public String saveProject(@Valid @ModelAttribute("project") Projects project,
                               BindingResult result,
-                              @RequestParam("personalInfoId") Long personalInfoId,
+                              @RequestParam("token") String token,
                               Model model) {
 
-        Optional<PersonalInfo> personalInfoOpt = personalInfoService.findById(personalInfoId);
+        Optional<PersonalInfo> personalInfoOpt = personalInfoService.findByEditToken(token);
 
         if (personalInfoOpt.isEmpty()) {
             return "redirect:/form";
         }
 
+        PersonalInfo personalInfo = personalInfoOpt.get();
+        Long personalInfoId = personalInfo.getId();
+
         if (result.hasErrors()) {
-            model.addAttribute("personalInfoId", personalInfoId);
+            model.addAttribute("token", token);
             model.addAttribute("projectsList", projectsService.findByPersonalInfoId(personalInfoId));
             return "proyectos";
         }
 
-        project.setPersonalInfo(personalInfoOpt.get());
+        project.setPersonalInfo(personalInfo);
         projectsService.save(project);
 
-        return "redirect:/projects?personalInfoId=" + personalInfoId;
+        return "redirect:/projects?token=" + token;
     }
 
-    @GetMapping("/projects/next/{personalInfoId}")
-    public String goToLanguages(@PathVariable Long personalInfoId,
+    @GetMapping("/projects/next")
+    public String goToLanguages(@RequestParam("token") String token,
                                 RedirectAttributes redirectAttributes) {
+
+        Optional<PersonalInfo> personalInfoOpt = personalInfoService.findByEditToken(token);
+
+        if (personalInfoOpt.isEmpty()) {
+            return "redirect:/form";
+        }
+
+        Long personalInfoId = personalInfoOpt.get().getId();
 
         boolean hasProjects = projectsService.existsByPersonalInfoId(personalInfoId);
 
         if (!hasProjects) {
             redirectAttributes.addFlashAttribute("nextError",
                     "Debes añadir al menos un proyecto antes de continuar.");
-            return "redirect:/projects?personalInfoId=" + personalInfoId;
+            return "redirect:/projects?token=" + token;
         }
 
-        return "redirect:/idiomas?personalInfoId=" + personalInfoId;
+        return "redirect:/idiomas?token=" + token;
     }
 
     @GetMapping("/idiomas")
-    public String showIdiomasForm(@RequestParam("personalInfoId") Long personalInfoId, Model model) {
+    public String showIdiomasForm(@RequestParam("token") String token, Model model) {
+        Optional<PersonalInfo> personalInfoOpt = personalInfoService.findByEditToken(token);
+
+        if (personalInfoOpt.isEmpty()) {
+            return "redirect:/form";
+        }
+
+        Long personalInfoId = personalInfoOpt.get().getId();
+
         model.addAttribute("idiomas", new Idiomas());
-        model.addAttribute("personalInfoId", personalInfoId);
+        model.addAttribute("token", token);
         model.addAttribute("idiomasList", idiomasService.findByPersonalInfoId(personalInfoId));
         return "idiomas";
     }
@@ -241,36 +322,43 @@ public class PortfolioController {
     @PostMapping("/idiomas/save")
     public String saveIdiomas(@Valid @ModelAttribute("idiomas") Idiomas idiomas,
                               BindingResult result,
-                              @RequestParam("personalInfoId") Long personalInfoId,
+                              @RequestParam("token") String token,
                               Model model) {
 
-        Optional<PersonalInfo> personalInfoOpt = personalInfoService.findById(personalInfoId);
+        Optional<PersonalInfo> personalInfoOpt = personalInfoService.findByEditToken(token);
 
         if (personalInfoOpt.isEmpty()) {
             return "redirect:/form";
         }
 
+        PersonalInfo personalInfo = personalInfoOpt.get();
+        Long personalInfoId = personalInfo.getId();
+
         if (result.hasErrors()) {
-            model.addAttribute("personalInfoId", personalInfoId);
+            model.addAttribute("token", token);
             model.addAttribute("idiomasList", idiomasService.findByPersonalInfoId(personalInfoId));
             return "idiomas";
         }
 
-        idiomas.setPersonalInfo(personalInfoOpt.get());
+        idiomas.setPersonalInfo(personalInfo);
         idiomasService.save(idiomas);
 
-        return "redirect:/idiomas?personalInfoId=" + personalInfoId;
+        return "redirect:/idiomas?token=" + token;
     }
 
     @GetMapping("/portfolio")
-    public String showPortfolio(@RequestParam("personalInfoId") Long personalInfoId, Model model) {
-        Optional<PersonalInfo> personalInfoOpt = personalInfoService.findById(personalInfoId);
+    public String showPortfolio(@RequestParam("token") String token, Model model) {
+        Optional<PersonalInfo> personalInfoOpt = personalInfoService.findByEditToken(token);
 
         if (personalInfoOpt.isEmpty()) {
             return "redirect:/form";
         }
 
-        model.addAttribute("personalInfo", personalInfoOpt.get());
+        PersonalInfo personalInfo = personalInfoOpt.get();
+        Long personalInfoId = personalInfo.getId();
+
+        model.addAttribute("personalInfo", personalInfo);
+        model.addAttribute("token", token);
         model.addAttribute("skillsList", skillsService.findByPersonalInfoId(personalInfoId));
         model.addAttribute("educationList", educationService.findByPersonalInfoId(personalInfoId));
         model.addAttribute("experienceList", experienceService.findByPersonalInfoId(personalInfoId));
